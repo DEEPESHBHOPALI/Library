@@ -27,19 +27,27 @@ const returnBooks = async (req, res) => {
             const diffTime = Math.abs(returnDate - lendDate);
             const diffDays = Math.max(0, Math.ceil((diffTime / (1000 * 60 * 60 * 24))));
             
-            let perDayCharge;
+            let perDayCharge = 0;
             switch (libraryBook.type) {
-                case 'Fiction':
-                    perDayCharge = 3;
+                case 'Regular':
+                    if (diffDays > 0) {
+                        if (diffDays <= 2) {
+                            perDayCharge = Math.max(diffDays * 1, 2);
+                        } else {
+                            perDayCharge = (2 * 1) + ((diffDays - 2) * 1.5);
+                        }
+                    }
                     break;
                 case 'Novel':
-                    perDayCharge = 1.5;
+                    if (diffDays > 0) {
+                        perDayCharge = Math.max(diffDays * 1.5, 4.5);
+                    }
                     break;
                 default:
-                    perDayCharge = 1.5;
+                    perDayCharge = diffDays * 1.5;
                     break;
             }
-            totalCharges += diffDays * perDayCharge;
+            totalCharges += perDayCharge;
 
             // Removing book from the customer's books array and updating the stockCount in books
             const bookInDB = await Book.findById(book.book_id);
