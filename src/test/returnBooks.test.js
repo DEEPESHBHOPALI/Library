@@ -2,14 +2,17 @@ import request from 'supertest';
 import app from '../../index.js';
 import Customer from '../models/customer.js';
 import mongoose from 'mongoose';
+import Book from '../models/book.js';
 
 describe('Return Books API', () => {
     beforeEach(async () => {
         await Customer.deleteMany({});
+        await Book.deleteMany({});
     });
 
     afterEach(async () => {
         await Customer.deleteMany({});
+        await Book.deleteMany({});
     });
 
     it('should calculate the correct charges for returned books', async () => {
@@ -34,7 +37,28 @@ describe('Return Books API', () => {
             ]
         };
 
+       const bookData1 = {
+            _id: 'validBookId1',
+            author_name: "validAuthor1",
+            book_name: "validBook1",
+            title: 'Fiction Book',
+            type: 'Fiction',
+            stockCount: 5
+        };
+
+        const bookData2 = {
+            _id: 'validBookId2',
+            author_name: "validAuthor2",
+            book_name: "validBook2",
+            title: 'Novel Book',
+            type: 'Novel',
+            stockCount: 5
+        };
+
+        
         await Customer.create(customerData);
+        await Book.create(bookData1);
+        await Book.create(bookData2);
 
         const res = await request(app)
             .post('/returnBooks')
@@ -44,7 +68,7 @@ describe('Return Books API', () => {
             });
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('totalCharges', 10);
+        expect(res.body).toHaveProperty('totalCharges', 22.5);
     });
 
     it('should return 404 if customer is not found', async () => {
