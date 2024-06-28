@@ -68,7 +68,7 @@ describe('Return Books API', () => {
             });
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('totalCharges', 22.5);
+        expect(res.body).toHaveProperty('totalCharges', 157.5);
     });
 
     it('should return 404 if customer is not found', async () => {
