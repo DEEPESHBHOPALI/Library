@@ -24,6 +24,16 @@ async function connectToMongoDB() {
     }
 }
 
+function determineBookType(authorName) {
+    if (authorName === "Yvette Koelpin-Stanton DDS") {
+        return "Fiction";
+    } else if (authorName === "Josh Cruickshank") {
+        return "Novel";
+    } else {
+        return "Regular";
+    }
+}
+
 // Function to start data migration
 async function migrateData() {
     let migratedCount = 0
@@ -47,6 +57,7 @@ async function migrateData() {
                         _id: book.book_id,
                         book_name: book.book_name,
                         author_name: book.author_name,
+                        type: determineBookType(book.author_name),
                         stockCount: 1,
                         stock_in_date: new Date(new Date(book.lend_date).getTime() - 30 * 24 * 60 * 60 * 1000) // Taking stock_in_date as 30 days before the lend_date
                     });
