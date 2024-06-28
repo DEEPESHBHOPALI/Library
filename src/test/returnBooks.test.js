@@ -23,54 +23,73 @@ describe('Return Books API', () => {
             customer_name: 'John Doe',
             books: [
                 {
-                    book_id: 'validBookId1',
+                    book_id: 'regularBookId',
                     lend_date: new Date('2024-06-20'),
-                    return_date: new Date('2024-07-25'),
-                    count: 1
+                    return_date: new Date('2024-06-21'), // Rented for 1 day
+                    days_to_return: 30,
+                    type: 'Regular'
                 },
                 {
-                    book_id: 'validBookId2',
-                    lend_date: new Date('2024-06-21'),
-                    return_date: new Date('2024-07-26'),
-                    count: 1
+                    book_id: 'novelBookId',
+                    lend_date: new Date('2024-06-20'),
+                    return_date: new Date('2024-06-25'), // Rented for 5 days
+                    days_to_return: 30,
+                    type: 'Novel'
+                },
+                {
+                    book_id: 'defaultBookId',
+                    lend_date: new Date('2024-06-20'),
+                    return_date: new Date('2024-06-26'), // Rented for 6 days
+                    days_to_return: 30,
+                    type: 'Fiction'
                 }
             ]
         };
 
-       const bookData1 = {
-            _id: 'validBookId1',
-            author_name: "validAuthor1",
-            book_name: "validBook1",
-            title: 'Fiction Book',
-            type: 'Fiction',
+        const regularBookData = {
+            _id: 'regularBookId',
+            author_name: "Regular Author",
+            book_name: "Regular Book",
+            title: 'Regular Book',
+            type: 'Regular',
             stockCount: 5
         };
 
-        const bookData2 = {
-            _id: 'validBookId2',
-            author_name: "validAuthor2",
-            book_name: "validBook2",
+        const novelBookData = {
+            _id: 'novelBookId',
+            author_name: "Novel Author",
+            book_name: "Novel Book",
             title: 'Novel Book',
             type: 'Novel',
             stockCount: 5
         };
 
-        
+        const defaultBookData = {
+            _id: 'defaultBookId',
+            author_name: "Default Author",
+            book_name: "Default Book",
+            title: 'Default Book',
+            type: 'Fiction',
+            stockCount: 5
+        };
+
         await Customer.create(customerData);
-        await Book.create(bookData1);
-        await Book.create(bookData2);
+        await Book.create(regularBookData);
+        await Book.create(novelBookData);
+        await Book.create(defaultBookData);
 
         const res = await request(app)
             .post('/returnBooks')
             .send({
                 customerId: customerId,
-                booksToReturn: ['validBookId1', 'validBookId2']
+                booksToReturn: ['regularBookId', 'novelBookId', 'defaultBookId']
             });
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('totalCharges', 157.5);
+        expect(res.body).toHaveProperty('totalCharges', 18.5);
+        // Expected total charges: 2 (Regular) + 7.5 (Novel) + 9 (Fiction)
     });
-
+    
     it('should return 404 if customer is not found', async () => {
         const res = await request(app)
             .post('/returnBooks')
