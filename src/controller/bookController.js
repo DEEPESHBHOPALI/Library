@@ -17,12 +17,30 @@ const returnBooks = async (req, res) => {
                 return res.status(404).json({ message: `Book not found` });
             }
 
+            const libraryBook = await Book.findById(bookToReturn);
+            if (!libraryBook) {
+                return res.status(404).json({ message: `Book not found in library` });
+            }
+
             const lendDate = new Date(book.lend_date);
             const returnDate = new Date(book.return_date);
             const daysToReturn = book.days_to_return || 30;
             const diffTime = Math.abs(returnDate - lendDate);
             const diffDays = Math.max(0, Math.ceil((diffTime / (1000 * 60 * 60 * 24)) - daysToReturn));
-            totalCharges += diffDays;
+            
+            let perDayCharge;
+            switch (libraryBook.type) {
+                case 'Fiction':
+                    perDayCharge = 3;
+                    break;
+                case 'Novel':
+                    perDayCharge = 1.5;
+                    break;
+                default:
+                    perDayCharge = 1.5;
+                    break;
+            }
+            totalCharges += diffDays * perDayCharge;
 
             // Removing book from the customer's books array and updating the stockCount in books
             const bookInDB = await Book.findById(book.book_id);
