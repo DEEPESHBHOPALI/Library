@@ -24,9 +24,8 @@ const returnBooks = async (req, res) => {
 
             const lendDate = new Date(book.lend_date);
             const returnDate = new Date(book.return_date);
-            const daysToReturn = book.days_to_return || 30;
             const diffTime = Math.abs(returnDate - lendDate);
-            const diffDays = Math.max(0, Math.ceil((diffTime / (1000 * 60 * 60 * 24)) - daysToReturn));
+            const diffDays = Math.max(0, Math.ceil((diffTime / (1000 * 60 * 60 * 24))));
             
             let perDayCharge;
             switch (libraryBook.type) {
