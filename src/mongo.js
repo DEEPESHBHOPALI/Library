@@ -1,7 +1,7 @@
 import { connect } from 'mongoose';
 
 export const mongoConnect = () => {
-    connect("mongodb+srv://dipu241999:deepeshbhopali@cluster0.zjktaps.mongodb.net/Library?retryWrites=true&w=majority&appName=Cluster0", {
+    connect("mongodb+srv://dipu241999:<password>@cluster0.zjktaps.mongodb.net/Library?retryWrites=true&w=majority&appName=Cluster0", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
