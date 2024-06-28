@@ -6,6 +6,7 @@ const bookSchema = new mongoose.Schema({
     author_name: { type: String, required: true },
     stockCount: { type: Number, default: 0 },
     stockInDate: { type: Date, default: Date.now },
+    type: { type: String, enum: ['Regular', 'Fiction', 'Novel'], default: 'Regular' },
 });
 
 const Book = mongoose.model('Book', bookSchema);
