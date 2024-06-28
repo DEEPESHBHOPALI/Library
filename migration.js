@@ -6,7 +6,7 @@ import Customer from './src/models/customer.js';
 
 async function connectToMongoDB() {
     try {
-        await mongoose.connect("mongodb+srv://dipu241999:deepeshbhopali@cluster0.zjktaps.mongodb.net/Library", {
+        await mongoose.connect("mongodb+srv://dipu241999:<password>@cluster0.zjktaps.mongodb.net/Library", {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
